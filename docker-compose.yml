@@ -1,0 +1,17 @@
+services:
+  mastra-ticker:
+    build: .
+    ports:
+      - "4111:4111"
+    environment:
+      TICKER_SYMBOL: ${TICKER_SYMBOL:-SAP}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-openrouter/free}
+      DATA_DIR: /data
+      FIRECRAWL_API_URL: ${FIRECRAWL_API_URL:-http://firecrawl-api.home.svc.cluster.local:3002}
+      APPRISE_URL: ${APPRISE_URL:-http://apprise.monitoring.svc.cluster.local:8000/notify/apprise}
+    volumes:
+      - mastra-data:/data
+
+volumes:
+  mastra-data:
