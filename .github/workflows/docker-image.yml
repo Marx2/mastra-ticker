@@ -9,7 +9,9 @@ on:
 jobs:
 
   release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # [ci-skip] in the pushed commit message skips the release and the image
+    # build (see pfire-docs docs/ci-skip.md for the convention).
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[ci-skip]') }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -46,6 +48,7 @@ jobs:
     needs: release
     if: |
       always() &&
+      !contains(github.event.head_commit.message, '[ci-skip]') &&
       (github.event_name == 'pull_request' ||
        (github.event_name == 'push' && needs.release.result == 'success'))
     runs-on: ubuntu-latest
